@@ -1,0 +1,19 @@
+Package: farsdata
+Type: Package
+Title: Collections of functions to load the fars data
+Version: 0.1.0
+Author: Dean Fantazzini
+Maintainer: Dean Fantazzini <dean.fantazzini@gmail.com>
+Description: This package contains a set of function to load the fars data and plot them.
+License: GPL-3
+Imports:
+    readr,
+    dplyr,
+    tidyr,
+    maps,
+    graphics
+RoxygenNote: 5.0.1
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

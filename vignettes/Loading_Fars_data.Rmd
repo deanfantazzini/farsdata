@@ -1,0 +1,92 @@
+---
+title: "Loading Fars data"
+author: "Dean Fantazzini"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Loading Fars data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The fars data package contains a set of functions designed to load fars data and plot them. More specifically, these data come from the US National Highway Traffic Safety Administration's [Fatality Analysis Reporting System](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)), which is a nationwide census providing the American public yearly data regarding fatal injuries suffered in motor vehicle traffic crashes.
+
+
+## Package structure
+
+The package consists of five functions:
+
+* **fars_read**: function to read the fars csv file data
+* **make_filename**: function to create the filename for the fars csv file data
+* **fars_read_years**: function to read the fars csv file data over several years extracting the months
+* **fars_summarize_years**:Function to read the fars csv file data over several years, summaryzing the crashes for each month of the given years
+* **fars_map_state**: function to plot the crashes' locations on a US state map
+
+I will provide an example for each function in the sections below.
+
+## Example: *fars_read*
+
+The `fars_read` function  first checks whether the filename is correct and if this is not correct the execution of the function is stopped. Otherwise, the csv data is loaded using the `read_csv` function from the readr package (any messages are suppressed) and then transformed into a dataframe using the `tbl_df` function from the dplyr package. 
+
+An example is shown using the 2013 raw data saved in the inst/extdata directory of the package:
+
+```{r, echo=TRUE, eval=TRUE}
+ library(farsdata)
+ data_file<-system.file("extdata","accident_2013.csv.bz2", package = "farsdata")
+ setwd(dirname(data_file))
+ file="accident_2013.csv.bz2"
+ dat<-fars_read(file)
+ head(dat, n=5)
+```
+
+
+## Example: *make_filename*
+
+The `make_filename` function  creates the filename for the specific yearly fars csv (zipped) file data. There are 3 possible years: 2013, 2014, 2015.
+
+A small example is reported below:
+```{r, echo=TRUE, eval=TRUE}
+ file=make_filename(2013)
+ file
+```
+
+## Example: *fars_read_years*
+
+The `fars_read_years` function  checks whether the given years are correct, then reads the fars csv file data and extracts the months of the crashes. If the years are invalid it sends a warning. Remember that only 3 years are available: 2013,2014,2015
+
+A small example is reported below:
+```{r, echo=TRUE, eval=TRUE}
+ data_file<-system.file("extdata","accident_2014.csv.bz2", package = "farsdata")
+ setwd(dirname(data_file))
+ dat=fars_read_years(c(2013,2014))
+ head(dat)
+```
+
+
+## Example: *fars_summarize_years*
+
+The `fars_summarize_years` function  cchecks whether the given years are correct, then reads the fars csv file data, extracts the months of the crashes, compute the number of crashes for each month, and then prepare a dataframe
+ where the rows are the months, while the columns are the year.
+
+A small example is reported below:
+```{r, echo=TRUE, eval=TRUE}
+ data_file<-system.file("extdata","accident_2013.csv.bz2", package = "farsdata")
+ setwd(dirname(data_file))
+ dat=fars_summarize_years(c(2013,2014,2015))
+ dat
+```
+
+
+## Example: *fars_map_state *
+
+The `fars_map_state ` function   loads the fars data, checks that whether US state number is valid (otherwise it stops),
+ checks whether there are crashes to plot (otherwise it sends the message "no accidents to plot"), checks whether the latitude and longitudes are correct (otherwise it inserts na), and finally plots the locations of the accidents
+ using the US state map where they took place.
+
+A small example is reported below:
+```{r, echo=TRUE, eval=TRUE, warning=FALSE}
+ data_file<-system.file("extdata","accident_2013.csv.bz2", package = "farsdata")
+ setwd(dirname(data_file))
+ library(maps)
+ fars_map_state(48, 2014)
+```
